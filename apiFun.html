@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>apiFun</title>
+<script>
+	function getHoliday(){
+		//make request object to make HTTP request when page loads
+		request = new XMLHttpRequest();
+		console.log("1-request object created");
+		
+		//set the URL for the AJAX request to be a JSON file
+		request.open("GET", "	https://calendarific.com/api/v2/holidays?&api_key=4224eebf4125ffc89fafcdca783cb43e6e7d8c02&country=US&year=2020&month=11&day=1", true);
+		console.log("2 - opened request file");
+		
+		//set up event handler/callback
+		request.onreadystatechange = function(){
+			console.log("3 - readystatechange event fired.");
+			
+			if(request.readyState == 4 && request.status == 200){
+				//wait for done + success
+				console.log("5 - response received");
+				result = request.responseText;
+				holiday = JSON.parse(result);
+				
+				console.log(holiday);
+				
+				document.getElementById("data").innerHTML="The first holiday of November 2020 was " + holiday['response']['holidays'][0]['name'];
+				
+				//alert(result);
+			}
+			
+			else if (request.readyState == 4 && request.status != 200){
+				document.getElementById("data").innerHTML = "Something is wrong! Check the logs to see where this went off the rails";
+			}
+			else if(request.readyState==3){
+				document.getElementById("data").innerHTML = "Too soon! Try again";
+			}
+		}
+		//fire off HTTP request
+		request.send();
+		console.log("4- Request sent");
+	}
+</script>
+</head>
+
+<body onLoad = "getHoliday()">
+	<h1>November 2020</h1>
+	<div id = "data">Loading...</div>
+	<h3>Questions</h3>
+	<p>1. This API holds information about different holidays. <br><br>2. I found it at <a href="https://calendarific.com/">Calendarific</a> <br><br>3. I had to send in the year and the country that I was looking for a holiday in, but I also sent in the month of November as well as the date of the 1st. <br><br>4. This API is useful for determining wheter or not a given day is a holiday and when holidays fall during the year. This could be useful for creating a calendar for a website or determining whether or not a business should be open or providing services on a given day. </p>
+</body>
+</html>
